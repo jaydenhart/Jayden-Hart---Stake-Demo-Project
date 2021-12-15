@@ -1,0 +1,7 @@
+<h1>Post</h1>
+<a routerLink="/posts">Go back to all posts</a>
+
+<div *ngIf="post$ | async; let post">
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.body }}</p>
+</div>

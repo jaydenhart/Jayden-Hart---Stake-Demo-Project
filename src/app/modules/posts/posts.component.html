@@ -1,0 +1,35 @@
+<!-- <ng-container
+  *ngIf="{
+    posts: posts$ | async,
+    users: users$ | async
+  } as pageData"
+> -->
+<ng-container *ngIf="posts$ | async; let posts">
+  <ng-container *ngIf="users$ | async; let users">
+    <h1>Posts</h1>
+
+    <input placeholder="Filter posts" />
+
+    <pagination
+      *ngIf="posts"
+      [paginationLinks]="posts.paginationLinks"
+      (test)="testOutput($event)"
+    ></pagination>
+
+    <a routerLink="/post">Go to post detail</a>
+
+    <ng-container *ngFor="let post of posts.data; trackBy: trackPostsBy">
+      <post-link
+        [post]="post"
+        [user]="users | findUserById: post.userId"
+      ></post-link>
+    </ng-container>
+
+    <pagination
+      *ngIf="posts"
+      [paginationLinks]="posts.paginationLinks"
+    ></pagination>
+  </ng-container>
+</ng-container>
+
+{{ testChangeDetection() }}

@@ -1,0 +1,7 @@
+<a routerLink="{{ '/post/' + post.id }}">
+  <ng-container *ngIf="post">
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.body }}</p>
+  </ng-container>
+  <div *ngIf="user">Posted by: {{ user.name }}</div>
+</a>
