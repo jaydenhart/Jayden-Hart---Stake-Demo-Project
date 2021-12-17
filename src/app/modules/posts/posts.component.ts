@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { tap, debounceTime } from 'rxjs/operators';
 import { PaginatedDataModel } from '../../core/models/paginated-data-model';
 import { PostModel } from '../../core/models/post-model';
 import { UserModel } from '../../core/models/user-model';
@@ -16,11 +17,16 @@ export class PostsComponent implements OnInit {
   public posts$: Observable<PaginatedDataModel<PostModel[]>> = null;
   public users$: Observable<UserModel[]> = null;
 
+  private filterByUserSubscription: Subscription = null;
+  public filterByUserControl = new FormControl();
+
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.initialisePosts();
     this.initialiseUsers();
+    this.getData();
+    this.initialiseFilterByUserSubscription();
   }
 
   public trackPostsBy(index: number, post: PostModel) {
@@ -31,10 +37,13 @@ export class PostsComponent implements OnInit {
     console.log('PostsComponent ChangeDetection');
   }
 
+  private getData() {
+    this.dataService.fetchPosts();
+    this.dataService.fetchUsers();
+  }
+
   private initialisePosts() {
-    this.posts$ = this.dataService
-      .getPosts()
-      .pipe(tap((res) => console.log('POSTS: ', res)));
+    this.posts$ = this.dataService.getPosts();
   }
 
   private initialiseUsers() {
@@ -42,6 +51,16 @@ export class PostsComponent implements OnInit {
   }
 
   public testOutput(data) {
-    this.posts$ = this.dataService.getPosts(data);
+    this.dataService.fetchPosts();
+  }
+
+  private initialiseFilterByUserSubscription() {
+    this.filterByUserSubscription = this.filterByUserControl.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe((res) => this.filterPostsByUser(res));
+  }
+
+  private filterPostsByUser(event) {
+    this.dataService.fetchPosts(this.dataService.findUserIdsByName(event));
   }
 }

@@ -22,7 +22,7 @@ export class PostDetailComponent implements OnInit {
   ngOnInit(): void {
     this.post$ = this.route.paramMap.pipe(
       switchMap((params) => {
-        return this.dataService.getPost(parseInt(params.get('id')));
+        return this.dataService.fetchPost(parseInt(params.get('id')));
       })
     );
   }

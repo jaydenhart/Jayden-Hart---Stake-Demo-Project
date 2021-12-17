@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PaginatedDataModel } from '../models/paginated-data-model';
 import { PaginationLinksModel } from '../models/pagination-links-model';
@@ -11,51 +11,74 @@ import { UserModel } from '../models/user-model';
   providedIn: 'root',
 })
 export class DataService {
+  private posts$: BehaviorSubject<PaginatedDataModel<PostModel[]>> =
+    new BehaviorSubject<PaginatedDataModel<PostModel[]>>(null);
+
+  private users$: BehaviorSubject<UserModel[]> = new BehaviorSubject<
+    UserModel[]
+  >(null);
+
+  private baseUrl: string = 'https://jsonplaceholder.typicode.com';
+
   constructor(private http: HttpClient) {}
 
   /**
-   * @name getPosts
+   * @name fetchPosts
    * @function
    * @returns {Observable} JSON Posts
    * @description Gets and returns all posts as an observable.
    */
-  public getPosts(
-    url: string = 'https://jsonplaceholder.typicode.com/posts?_page=1&_limit=10'
-  ): Observable<PaginatedDataModel<PostModel[]>> {
-    return this.http.get(url, { observe: 'response' }).pipe(
-      map((res: any) => {
-        const paginatedData: PaginatedDataModel<PostModel[]> = {
-          paginationLinks: this.parseLinkHeader(res.headers.get('Link')),
-          data: res.body,
-        };
+  public fetchPosts(
+    userIds: number[] = [],
+    paginatePage: number = 1,
+    paginateLimit: number = 10
+  ): Subscription {
+    let queryParams = {
+      userId: userIds,
+      _page: paginatePage,
+      _limit: paginateLimit,
+    } as any; //TODO: Interface for this maybe
 
-        return paginatedData;
+    return this.http
+      .get(this.baseUrl + '/posts', {
+        params: queryParams,
+        observe: 'response',
       })
-    );
+      .pipe(
+        map((res: any) => {
+          const paginatedData: PaginatedDataModel<PostModel[]> = {
+            paginationLinks: this.parseLinkHeader(res.headers.get('Link')),
+            data: res.body,
+          };
+
+          return paginatedData;
+        })
+      )
+      .subscribe((res) => this.posts$.next(res));
   }
 
   /**
-   * @name getPost
+   * @name fetchPost
    * @function
    * @returns {Observable} JSON Post
    * @description Gets and returns a single post by id as an observable.
    */
-  public getPost(id: number = 0): Observable<PostModel> {
+  public fetchPost(id: number = 0): Observable<PostModel> {
     return this.http.get<PostModel>(
       'https://jsonplaceholder.typicode.com/posts/' + id
     );
   }
 
   /**
-   * @name getUsers
+   * @name fetchUsers
    * @function
    * @returns {Observable} JSON Users
    * @description Gets and returns all users as an observable.
    */
-  public getUsers(): Observable<UserModel[]> {
-    return this.http.get<UserModel[]>(
-      'https://jsonplaceholder.typicode.com/users'
-    );
+  public fetchUsers(): Subscription {
+    return this.http
+      .get<UserModel[]>('https://jsonplaceholder.typicode.com/users')
+      .subscribe((res) => this.users$.next(res));
   }
 
   /**
@@ -65,23 +88,79 @@ export class DataService {
    * @description Parses and returns the link headers from a paginated http request into a PaginationLinksModel
    */
   private parseLinkHeader(linkHeader): PaginationLinksModel {
+    if (linkHeader == null || linkHeader == '') {
+      return {};
+    }
+
+    console.log('LINKHEADER: ', linkHeader);
+
     const linkHeadersArray = linkHeader
       .split(', ')
       .map((header) => header.split('; '));
+
+    console.log('LINKHEADERS ARRAY: ', linkHeadersArray);
 
     const linkHeadersMap = linkHeadersArray.map((header) => {
       const thisHeaderRel = header[1].replace(/"/g, '').replace('rel=', '');
       const thisHeaderUrl = header[0]
         .slice(1, -1)
         .replace('http://', 'https://');
+
+      console.log(
+        'PAGE URL PARAM: ',
+        this.getParameterByName('_page', thisHeaderUrl)
+      );
+      console.log(
+        'LIMIT URL PARAM: ',
+        this.getParameterByName('_limit', thisHeaderUrl)
+      );
       return [thisHeaderRel, thisHeaderUrl];
     });
+
+    console.log('LINKHEADERS MAP: ', linkHeadersMap);
 
     let linkHeadersObject: PaginationLinksModel = {};
     for (let [key, value] of linkHeadersMap) {
       linkHeadersObject[key] = value;
     }
 
+    console.log('LINKHEADERS OBJECT: ', linkHeadersObject);
+
     return linkHeadersObject;
+  }
+
+  private getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  public getPosts(): Observable<PaginatedDataModel<PostModel[]>> {
+    return this.posts$.asObservable();
+  }
+
+  public getUsers(): Observable<UserModel[]> {
+    return this.users$.asObservable();
+  }
+
+  public findUserIdsByName(searchQuery): number[] {
+    if (searchQuery == null || searchQuery == '') return [];
+
+    let foundUserIds: number[] = this.users$.value
+      .filter((user) => {
+        return user.name.toLowerCase().includes(searchQuery.toLowerCase());
+      })
+      .map((user) => {
+        return user.id;
+      });
+
+    if (foundUserIds.length == 0) {
+      return null;
+    }
+
+    return foundUserIds;
   }
 }

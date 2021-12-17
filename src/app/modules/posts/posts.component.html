@@ -8,7 +8,10 @@
   <ng-container *ngIf="users$ | async; let users">
     <h1>Posts</h1>
 
-    <input placeholder="Filter posts" />
+    <input
+      [formControl]="filterByUserControl"
+      placeholder="Filter posts"
+    />
 
     <pagination
       *ngIf="posts"

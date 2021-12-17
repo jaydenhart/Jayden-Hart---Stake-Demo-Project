@@ -5,9 +5,10 @@ import { PostsRoutingModule } from './posts-routing.module';
 import { FindUserByIdPipe } from '../../core/pipes/find-user-by-id.pipe';
 import { PostLinkComponent } from './components/post-link/post-link.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [CommonModule, PostsRoutingModule],
+  imports: [CommonModule, PostsRoutingModule, ReactiveFormsModule],
   declarations: [
     PostsComponent,
     PostLinkComponent,
