@@ -6,7 +6,7 @@
 >
   <h1 class="post-detail__title">{{ post.title }}</h1>
   <div *ngIf="users$ | async; let users" class="post-detail__username">
-    Posted by: {{ (users | findUserById: post.userId).name }}
+    Posted by: {{ (users | findUserById: post.userId).username }}
   </div>
   <p class="post-detail__body">{{ post.body }}</p>
 </div>
