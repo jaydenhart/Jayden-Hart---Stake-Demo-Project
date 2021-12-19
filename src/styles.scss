@@ -1,6 +1,7 @@
 /* Add application styles & imports to this file! */
 
-html {
-  background: black;
-  color: white;
-}
+@import './app/styles/variables.scss';
+@import './app/styles/page.scss';
+@import './app/styles/fonts.scss';
+@import './app/styles/typography.scss';
+@import './app/styles/inputs.scss';

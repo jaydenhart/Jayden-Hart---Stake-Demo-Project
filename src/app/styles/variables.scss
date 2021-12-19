@@ -1,0 +1,9 @@
+$white: #f8f8f8;
+$black: #2b2b2b;
+$grey: #6b6b6b;
+
+html {
+  --color-white: $white;
+  --color-black: $black;
+  --color-grey: $grey;
+}

@@ -1,9 +1,3 @@
-<!-- <ng-container
-  *ngIf="{
-    posts: posts$ | async,
-    users: users$ | async
-  } as pageData"
-> -->
 <ng-container *ngIf="posts$ | async; let posts">
   <ng-container *ngIf="users$ | async; let users">
     <h1>Posts</h1>
@@ -11,15 +5,18 @@
     <input
       [formControl]="filterByUserControl"
       placeholder="Filter posts"
+      list="users"
+      name="users"
     />
+    <datalist placeholder="Filter posts" id="users">
+      <option *ngFor="let user of users">{{ user.name }}</option>
+    </datalist>
 
     <pagination
       *ngIf="posts"
       [paginationLinks]="posts.paginationLinks"
-      (test)="testOutput($event)"
+      (paginate)="paginatePosts($event)"
     ></pagination>
-
-    <a routerLink="/post">Go to post detail</a>
 
     <ng-container *ngFor="let post of posts.data; trackBy: trackPostsBy">
       <post-link
@@ -31,6 +28,7 @@
     <pagination
       *ngIf="posts"
       [paginationLinks]="posts.paginationLinks"
+      (paginate)="paginatePosts($event)"
     ></pagination>
   </ng-container>
 </ng-container>

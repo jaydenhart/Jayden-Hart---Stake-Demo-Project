@@ -1,24 +1,24 @@
 <button
   *ngIf="paginationLinks.first"
-  (click)="testFunction(paginationLinks.first)"
+  (click)="outputPaginate(paginationLinks.first)"
 >
   First
 </button>
 <button
   *ngIf="paginationLinks.prev"
-  (click)="testFunction(paginationLinks.prev)"
+  (click)="outputPaginate(paginationLinks.prev)"
 >
   Prev
 </button>
 <button
   *ngIf="paginationLinks.next"
-  (click)="testFunction(paginationLinks.next)"
+  (click)="outputPaginate(paginationLinks.next)"
 >
   Next
 </button>
 <button
   *ngIf="paginationLinks.last"
-  (click)="testFunction(paginationLinks.last)"
+  (click)="outputPaginate(paginationLinks.last)"
 >
   Last
 </button>

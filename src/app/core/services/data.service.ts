@@ -28,19 +28,12 @@ export class DataService {
    * @returns {Observable} JSON Posts
    * @description Gets and returns all posts as an observable.
    */
-  public fetchPosts(
-    userIds: number[] = [],
-    paginatePage: number = 1,
-    paginateLimit: number = 10
+  public fetchPosts( //TODO: Try and swap url and query params around
+    queryParams: any = this.getBaseQueryParams(),
+    url: string = this.baseUrl + '/posts'
   ): Subscription {
-    let queryParams = {
-      userId: userIds,
-      _page: paginatePage,
-      _limit: paginateLimit,
-    } as any; //TODO: Interface for this maybe
-
     return this.http
-      .get(this.baseUrl + '/posts', {
+      .get(url, {
         params: queryParams,
         observe: 'response',
       })
@@ -55,6 +48,14 @@ export class DataService {
         })
       )
       .subscribe((res) => this.posts$.next(res));
+  }
+
+  public getBaseQueryParams() {
+    return {
+      userId: [],
+      _page: 1,
+      _limit: 10,
+    } as any; //TODO: Interface for this maybe
   }
 
   /**
@@ -92,51 +93,34 @@ export class DataService {
       return {};
     }
 
-    console.log('LINKHEADER: ', linkHeader);
-
     const linkHeadersArray = linkHeader
       .split(', ')
       .map((header) => header.split('; '));
-
-    console.log('LINKHEADERS ARRAY: ', linkHeadersArray);
 
     const linkHeadersMap = linkHeadersArray.map((header) => {
       const thisHeaderRel = header[1].replace(/"/g, '').replace('rel=', '');
       const thisHeaderUrl = header[0]
         .slice(1, -1)
         .replace('http://', 'https://');
-
-      console.log(
-        'PAGE URL PARAM: ',
-        this.getParameterByName('_page', thisHeaderUrl)
-      );
-      console.log(
-        'LIMIT URL PARAM: ',
-        this.getParameterByName('_limit', thisHeaderUrl)
-      );
       return [thisHeaderRel, thisHeaderUrl];
     });
-
-    console.log('LINKHEADERS MAP: ', linkHeadersMap);
 
     let linkHeadersObject: PaginationLinksModel = {};
     for (let [key, value] of linkHeadersMap) {
       linkHeadersObject[key] = value;
     }
 
-    console.log('LINKHEADERS OBJECT: ', linkHeadersObject);
-
     return linkHeadersObject;
   }
 
-  private getParameterByName(name, url = window.location.href) {
-    name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
+  //   function getParameterByName(name, url = window.location.href) {
+  //     name = name.replace(/[\[\]]/g, '\\$&');
+  //     var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+  //         results = regex.exec(url);
+  //     if (!results) return null;
+  //     if (!results[2]) return '';
+  //     return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  // }
 
   public getPosts(): Observable<PaginatedDataModel<PostModel[]>> {
     return this.posts$.asObservable();

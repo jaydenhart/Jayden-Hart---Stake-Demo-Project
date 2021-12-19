@@ -38,6 +38,7 @@ export class PostsComponent implements OnInit {
   }
 
   private getData() {
+    //TODO: update this function a bit
     this.dataService.fetchPosts();
     this.dataService.fetchUsers();
   }
@@ -50,8 +51,9 @@ export class PostsComponent implements OnInit {
     this.users$ = this.dataService.getUsers();
   }
 
-  public testOutput(data) {
-    this.dataService.fetchPosts();
+  public paginatePosts(url) {
+    console.log('PAGINATE POSTS WITH: ', url);
+    this.dataService.fetchPosts(null, url);
   }
 
   private initialiseFilterByUserSubscription() {
@@ -61,6 +63,8 @@ export class PostsComponent implements OnInit {
   }
 
   private filterPostsByUser(event) {
-    this.dataService.fetchPosts(this.dataService.findUserIdsByName(event));
+    let queryParams = this.dataService.getBaseQueryParams();
+    queryParams.userId = this.dataService.findUserIdsByName(event);
+    this.dataService.fetchPosts(queryParams);
   }
 }

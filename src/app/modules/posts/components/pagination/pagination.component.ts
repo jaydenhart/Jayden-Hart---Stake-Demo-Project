@@ -16,13 +16,13 @@ import { PaginationLinksModel } from '../../../../core/models/pagination-links-m
 })
 export class PaginationComponent implements OnInit {
   @Input() paginationLinks: PaginationLinksModel = {};
-  @Output() test: any = new EventEmitter<any>();
+  @Output() paginate: any = new EventEmitter<any>();
 
   constructor() {}
 
   ngOnInit(): void {}
 
-  testFunction(data) {
-    this.test.next(data);
+  outputPaginate(data) {
+    this.paginate.next(data);
   }
 }

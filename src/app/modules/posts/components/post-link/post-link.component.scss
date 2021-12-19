@@ -1,14 +1,14 @@
 :host {
-  background: grey;
+  background: var(--color-white);
   border-radius: 4px;
-  color: white;
   display: block;
   margin-bottom: 16px;
   padding: 16px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
   a {
-    color: white;
     cursor: pointer;
     text-decoration: none;
+    color: var(--color-black);
   }
 }
