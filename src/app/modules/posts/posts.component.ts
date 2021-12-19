@@ -18,29 +18,20 @@ export class PostsComponent implements OnInit {
   public users$: Observable<UserModel[]> = null;
 
   private filterByUserSubscription: Subscription = null;
-  public filterByUserControl = new FormControl();
+  public filterByUserControl: FormControl = new FormControl();
 
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.initialisePosts();
     this.initialiseUsers();
-    this.getData();
+    this.fetchPostData();
+    this.fetchUserData();
     this.initialiseFilterByUserSubscription();
   }
 
   public trackPostsBy(index: number, post: PostModel) {
     return post.id;
-  }
-
-  public testChangeDetection() {
-    console.log('PostsComponent ChangeDetection');
-  }
-
-  private getData() {
-    //TODO: update this function a bit
-    this.dataService.fetchPosts();
-    this.dataService.fetchUsers();
   }
 
   private initialisePosts() {
@@ -51,8 +42,15 @@ export class PostsComponent implements OnInit {
     this.users$ = this.dataService.getUsers();
   }
 
+  private fetchPostData() {
+    this.dataService.fetchPosts();
+  }
+
+  private fetchUserData() {
+    this.dataService.fetchUsers();
+  }
+
   public paginatePosts(url) {
-    console.log('PAGINATE POSTS WITH: ', url);
     this.dataService.fetchPosts(null, url);
   }
 

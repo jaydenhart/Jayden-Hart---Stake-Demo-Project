@@ -1,7 +1,21 @@
+label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-purple);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 input {
   height: 32px;
   border-radius: 4px;
   margin: 0 0 16px;
   padding: 4px;
-  border: 1px solid var(--color-black);
+  border: 2px solid var(--color-purple);
+  background: var(--color-white);
+  font-size: 1.2rem;
+
+  &::placeholder {
+    color: var(--color-grey);
+  }
 }

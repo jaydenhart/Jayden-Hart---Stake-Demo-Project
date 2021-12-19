@@ -2,13 +2,15 @@
   <ng-container *ngIf="users$ | async; let users">
     <h1>Posts</h1>
 
+    <label for="users">Filter posts</label>
     <input
       [formControl]="filterByUserControl"
-      placeholder="Filter posts"
-      list="users"
+      placeholder="Enter user name..."
+      list="users-datalist"
       name="users"
+      id="users"
     />
-    <datalist placeholder="Filter posts" id="users">
+    <datalist placeholder="Filter posts" id="users-datalist">
       <option *ngFor="let user of users">{{ user.name }}</option>
     </datalist>
 
@@ -32,5 +34,3 @@
     ></pagination>
   </ng-container>
 </ng-container>
-
-{{ testChangeDetection() }}

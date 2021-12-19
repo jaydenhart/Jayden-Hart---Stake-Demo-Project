@@ -1,8 +1,13 @@
 :host {
   display: block;
+  margin-bottom: 16px;
 
   button {
     display: inline-block;
-    background: darkred;
+    margin: 0 16px 0 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }

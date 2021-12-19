@@ -9,4 +9,8 @@ body {
   display: block;
   margin: 0 auto;
   padding: 16px;
+
+  @media (min-width: 768px) {
+    padding: 32px 16px;
+  }
 }

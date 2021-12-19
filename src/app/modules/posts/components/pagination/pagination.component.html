@@ -1,24 +1,28 @@
 <button
-  *ngIf="paginationLinks.first"
+  class="button"
   (click)="outputPaginate(paginationLinks.first)"
+  [disabled]="!paginationLinks.prev"
 >
   First
 </button>
 <button
-  *ngIf="paginationLinks.prev"
+  class="button"
   (click)="outputPaginate(paginationLinks.prev)"
+  [disabled]="!paginationLinks.prev"
 >
   Prev
 </button>
 <button
-  *ngIf="paginationLinks.next"
+  class="button"
   (click)="outputPaginate(paginationLinks.next)"
+  [disabled]="!paginationLinks.next"
 >
   Next
 </button>
 <button
-  *ngIf="paginationLinks.last"
+  class="button"
   (click)="outputPaginate(paginationLinks.last)"
+  [disabled]="!paginationLinks.next"
 >
   Last
 </button>

@@ -3,12 +3,22 @@
   border-radius: 4px;
   display: block;
   margin-bottom: 16px;
-  padding: 16px;
+  padding: 24px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: rgba(100, 100, 111, 0.4) 0px 7px 29px 0px;
+  }
 
   a {
     cursor: pointer;
     text-decoration: none;
     color: var(--color-black);
+  }
+
+  h2 {
+    color: var(--color-purple);
   }
 }

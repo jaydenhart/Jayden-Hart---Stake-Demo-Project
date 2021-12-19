@@ -1,9 +1,11 @@
 $white: #f8f8f8;
 $black: #2b2b2b;
-$grey: #6b6b6b;
+$grey: #9c9c9c;
+$purple: #8767a8;
 
 html {
-  --color-white: $white;
-  --color-black: $black;
-  --color-grey: $grey;
+  --color-white: #{$white};
+  --color-black: #{$black};
+  --color-grey: #{$grey};
+  --color-purple: #{$purple};
 }

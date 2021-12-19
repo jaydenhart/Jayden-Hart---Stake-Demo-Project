@@ -1,0 +1,33 @@
+button,
+a {
+  cursor: pointer;
+}
+
+button,
+a {
+  &.button {
+    border-style: none;
+    background: var(--color-purple);
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: var(--color-white);
+    font-size: 1.2rem;
+    transition: transform 0.2s ease-out;
+    text-decoration: none;
+    margin: 0 0 16px;
+    display: inline-block;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:disabled {
+      background: var(--color-grey);
+      cursor: default;
+
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}
