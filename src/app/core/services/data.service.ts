@@ -2,11 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { BaseQueryParamsModel } from '../models/base-query-params-model';
 import { PaginatedDataModel } from '../models/paginated-data-model';
 import { PaginationLinksModel } from '../models/pagination-links-model';
 import { PostModel } from '../models/post-model';
 import { UserModel } from '../models/user-model';
 
+/**
+ * @name DataService
+ * @class
+ * @description Manages all data and API calls for both Posts and Users.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -20,18 +26,26 @@ export class DataService {
 
   private baseUrl: string = 'https://jsonplaceholder.typicode.com';
 
+  /**
+   * @constructor
+   * @description Injects services
+   */
   constructor(private http: HttpClient) {}
 
   /**
    * @name fetchPosts
    * @function
-   * @returns {Observable} JSON Posts
-   * @description Gets and returns all posts as an observable.
+   * @returns {Subscription} The subscription of the http.get fetch call.
+   * @description Fetches all posts and pushes them to the posts$ observable for use througout the app
    */
-  public fetchPosts( //TODO: Try and swap url and query params around
-    queryParams: any = this.getBaseQueryParams(),
-    url: string = this.baseUrl + '/posts'
+  public fetchPosts(
+    url: string = null,
+    queryParams: BaseQueryParamsModel | any = this.getBaseQueryParams()
   ): Subscription {
+    if (url == null) {
+      url = this.baseUrl + '/posts';
+    }
+
     return this.http
       .get(url, {
         params: queryParams,
@@ -50,19 +64,12 @@ export class DataService {
       .subscribe((res) => this.posts$.next(res));
   }
 
-  public getBaseQueryParams() {
-    return {
-      userId: [],
-      _page: 1,
-      _limit: 10,
-    } as any; //TODO: Interface for this maybe
-  }
-
   /**
    * @name fetchPost
    * @function
-   * @returns {Observable} JSON Post
-   * @description Gets and returns a single post by id as an observable.
+   * @param {number} id - The post ID to search for
+   * @returns {Observable<PostModel>} An Observable containing the PostModel returned by the API fetch.
+   * @description Gets and returns a single post matched by id as an observable.
    */
   public fetchPost(id: number = 0): Observable<PostModel> {
     return this.http.get<PostModel>(
@@ -73,8 +80,8 @@ export class DataService {
   /**
    * @name fetchUsers
    * @function
-   * @returns {Observable} JSON Users
-   * @description Gets and returns all users as an observable.
+   * @returns {Subscription} The subscription of the http.get fetch call.
+   * @description Fetches all users and pushes them to the users$ observable for use througout the app
    */
   public fetchUsers(): Subscription {
     return this.http
@@ -85,6 +92,7 @@ export class DataService {
   /**
    * @name parseLinkHeader
    * @function
+   * @param {string} linkHeader - The LINK header returned by the paginated FETCH API.
    * @returns {PaginationLinksModel} An Object containing the First, Prev, Next, and Last pagination links
    * @description Parses and returns the link headers from a paginated http request into a PaginationLinksModel
    */
@@ -106,6 +114,7 @@ export class DataService {
     });
 
     let linkHeadersObject: PaginationLinksModel = {};
+
     for (let [key, value] of linkHeadersMap) {
       linkHeadersObject[key] = value;
     }
@@ -113,20 +122,39 @@ export class DataService {
     return linkHeadersObject;
   }
 
+  /**
+   * @name getPosts
+   * @function
+   * @returns {Observable<PaginatedDataModel<PostModel[]>>} An observable containing a Paginated Data Model of all PostModels
+   * @description Returns all locally stored paginated Posts as an observable.
+   */
   public getPosts(): Observable<PaginatedDataModel<PostModel[]>> {
     return this.posts$.asObservable();
   }
 
+  /**
+   * @name getUsers
+   * @function
+   * @returns {Observable<UserModel[]>} An observable containing an array of all UserModels
+   * @description Returns all locally stored UserModels as an observable.
+   */
   public getUsers(): Observable<UserModel[]> {
     return this.users$.asObservable();
   }
 
-  public findUserIdsByName(searchQuery): number[] {
+  /**
+   * @name findUserIdsByUsername
+   * @function
+   * @param {string} searchQuery - The search query to compare to the users username.
+   * @returns {number[]} An array of all matched user IDs
+   * @description Finds and returns all IDs of users matched by a searchQuery compared to a users username
+   */
+  public findUserIdsByUsername(searchQuery: string): number[] {
     if (searchQuery == null || searchQuery == '') return [];
 
     let foundUserIds: number[] = this.users$.value
       .filter((user) => {
-        return user.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return user.username.toLowerCase().includes(searchQuery.toLowerCase());
       })
       .map((user) => {
         return user.id;
@@ -137,5 +165,19 @@ export class DataService {
     }
 
     return foundUserIds;
+  }
+
+  /**
+   * @name getBaseQueryParams
+   * @function
+   * @returns {BaseQueryParamsModel} An BaseQueryParamsModel containing all of the query params for a paginated API GET.
+   * @description Returns an object containing all of the base query params for a paginated API GET, for use with fetching Posts.
+   */
+  public getBaseQueryParams(): BaseQueryParamsModel {
+    return {
+      userId: [],
+      _page: 1,
+      _limit: 10,
+    };
   }
 }

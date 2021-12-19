@@ -18,7 +18,13 @@
     color: var(--color-black);
   }
 
-  h2 {
+  .post-link__title {
     color: var(--color-purple);
+    margin-bottom: 0;
+  }
+
+  .post-link__username {
+    color: var(--color-grey);
+    margin-bottom: 32px;
   }
 }

@@ -1,4 +1,11 @@
-
 :host {
-  
+  .post-detail__title {
+    color: var(--color-black);
+    margin-bottom: 0;
+  }
+
+  .post-detail__username {
+    color: var(--color-grey);
+    margin-bottom: 32px;
+  }
 }

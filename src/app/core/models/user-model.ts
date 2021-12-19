@@ -1,3 +1,8 @@
+/**
+ * @name UserModel
+ * @interface
+ * @description Interface used to describe the Attributes of a User
+ */
 export interface UserModel {
   id: number;
   name?: string;

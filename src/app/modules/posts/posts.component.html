@@ -1,7 +1,6 @@
-<ng-container *ngIf="posts$ | async; let posts">
+<h1>Posts</h1>
+<ng-container *ngIf="posts$ | async; let posts; else: loading">
   <ng-container *ngIf="users$ | async; let users">
-    <h1>Posts</h1>
-
     <label for="users">Filter posts</label>
     <input
       [formControl]="filterByUserControl"
@@ -11,7 +10,7 @@
       id="users"
     />
     <datalist placeholder="Filter posts" id="users-datalist">
-      <option *ngFor="let user of users">{{ user.name }}</option>
+      <option *ngFor="let user of users">{{ user.username }}</option>
     </datalist>
 
     <pagination
@@ -34,3 +33,7 @@
     ></pagination>
   </ng-container>
 </ng-container>
+
+<ng-template #loading>
+  <div>Loading posts...</div>
+</ng-template>
