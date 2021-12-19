@@ -3,9 +3,13 @@
   border-radius: 4px;
   display: block;
   margin-bottom: 16px;
-  padding: 24px;
+  padding: 16px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+
+  @media (min-width: 768px) {
+    padding: 32px;
+  }
 
   &:hover {
     transform: scale(1.01);

@@ -1,10 +1,11 @@
-<h1>Posts</h1>
+<h1 className="posts__title">Posts</h1>
 <ng-container *ngIf="posts$ | async; let posts; else: loading">
   <ng-container *ngIf="users$ | async; let users">
     <label for="users">Filter posts</label>
     <input
       [formControl]="filterByUserControl"
       placeholder="Enter user name..."
+      className="posts__filter-input"
       list="users-datalist"
       name="users"
       id="users"

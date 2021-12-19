@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  OnDestroy,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -18,11 +23,11 @@ import { DataService } from '../../core/services/data.service';
   styleUrls: ['./posts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PostsComponent implements OnInit {
+export class PostsComponent implements OnInit, OnDestroy {
   public posts$: Observable<PaginatedDataModel<PostModel[]>> = null;
   public users$: Observable<UserModel[]> = null;
 
-  private filterByUserSubscription: Subscription = null; //TODO: unsubscribe from this
+  private filterByUserSubscription: Subscription = null;
   public filterByUserControl: FormControl = new FormControl();
 
   /**
@@ -43,6 +48,16 @@ export class PostsComponent implements OnInit {
     this.fetchPostData();
     this.fetchUserData();
     this.initialiseFilterByUserSubscription();
+  }
+
+  /**
+   * @name ngOnDestroy
+   * @function
+   * @returns {void} void
+   * @description Uninitialises and Unsubscribes all data
+   */
+  ngOnDestroy(): void {
+    this.filterByUserSubscription.unsubscribe();
   }
 
   /**

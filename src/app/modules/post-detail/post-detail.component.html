@@ -1,12 +1,15 @@
 <a class="button" routerLink="/posts">Go back to all posts</a>
 
-<ng-container *ngIf="post$ | async; let post; else: loading">
+<div
+  class="post-detail__container"
+  *ngIf="post$ | async; let post; else: loading"
+>
   <h1 class="post-detail__title">{{ post.title }}</h1>
   <div *ngIf="users$ | async; let users" class="post-detail__username">
     Posted by: {{ (users | findUserById: post.userId).name }}
   </div>
   <p class="post-detail__body">{{ post.body }}</p>
-</ng-container>
+</div>
 
 <ng-template #loading>
   <div>Loading post...</div>
