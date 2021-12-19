@@ -14,27 +14,35 @@
       <option *ngFor="let user of users">{{ user.username }}</option>
     </datalist>
 
-    <pagination
-      *ngIf="posts"
-      [paginationLinks]="posts.paginationLinks"
-      (paginate)="paginatePosts($event)"
-    ></pagination>
+    <ng-container *ngIf="posts.data.length > 0; else noPostsFound">
+      <pagination
+        *ngIf="posts"
+        [paginationLinks]="posts.paginationLinks"
+        (paginate)="paginatePosts($event)"
+      ></pagination>
 
-    <ng-container *ngFor="let post of posts.data; trackBy: trackPostsBy">
-      <post-link
-        [post]="post"
-        [user]="users | findUserById: post.userId"
-      ></post-link>
+      <ng-container *ngFor="let post of posts.data; trackBy: trackPostsBy">
+        <post-link
+          [post]="post"
+          [user]="users | findUserById: post.userId"
+        ></post-link>
+      </ng-container>
+
+      <pagination
+        *ngIf="posts"
+        [paginationLinks]="posts.paginationLinks"
+        (paginate)="paginatePosts($event)"
+      ></pagination>
     </ng-container>
-
-    <pagination
-      *ngIf="posts"
-      [paginationLinks]="posts.paginationLinks"
-      (paginate)="paginatePosts($event)"
-    ></pagination>
   </ng-container>
 </ng-container>
 
 <ng-template #loading>
   <div>Loading posts...</div>
+</ng-template>
+
+<ng-template #noPostsFound>
+  <div>
+    Oh no! Your search came up empty. Please try a different search query.
+  </div>
 </ng-template>
